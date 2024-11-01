@@ -16,6 +16,7 @@ export type Customer = {
   image_url: string;
 };
 
+// invoices 需要一下格式的数据
 export type Invoice = {
   id: string;
   customer_id: string;
