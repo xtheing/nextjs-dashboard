@@ -2,8 +2,8 @@
 
 import Form from '@/app/ui/invoices/edit-form';  // 使用的是 edit-form 的表单
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-// import { fetchCustomers } from '@/app/lib/data';
 import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
 
 // 从页面参数中读取发票 ID
 export default async function Page(props: { params: Promise<{ id: string }> }) {
@@ -14,6 +14,10 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     fetchInvoiceById(id),
     fetchCustomers(),
   ]);  // 获取特定发票和客户列表
+  
+  if (!invoice) {
+    notFound();  // 如果发票不存在，则返回 404
+  }
 
 // export default async function Page() {
   return (

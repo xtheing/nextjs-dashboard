@@ -24,10 +24,17 @@ export async function createInvoice(formData: FormData) {
     });
     const amountInCents = amount * 100;  // 以 cents 存储值
     const date = new Date().toISOString().split('T')[0];  // 创建日期
-    await sql`
-    INSERT INTO invoices (customer_id, amount, status, date)
-    VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-    `;  // 将数据插入数据库
+    try {  // 使用try catch 捕获错误
+        await sql`
+        INSERT INTO invoices (customer_id, amount, status, date)
+        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+        `;  // 将数据插入数据库
+    } catch (error) {
+        return {
+            message: "Database Error: Faild to Create Invoice",
+        };
+    }
+
     revalidatePath('/dashboard/invoices');  // 重新验证页面
     redirect('/dashboard/invoices');  //重定向回 /dashboard/invoices 页面
 
@@ -46,18 +53,32 @@ export async function updateInvoice(id: string, formData: FormData) {
     });
 
     const amountInCents = amount * 100;
-
-    await sql`
+    try {
+        await sql`
     UPDATE invoices
     SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
     WHERE id = ${id}
   `;
-
+    } catch (error) {
+        return {
+            message: "Database Error: Faild to Update Invoice",
+        };
+    }
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }
+
 // delete 操作
 export async function deleteInvoice(id: string) {
-    await sql`DELETE FROM invoices WHERE id = ${id}`;
-    revalidatePath('/dashboard/invoices');
+    throw new Error('Failed to Delete Invoice');  // 用于测试错误捕获的功能。
+    // try {
+    //     await sql`DELETE FROM invoices WHERE id = ${id}`;
+    //     revalidatePath('/dashboard/invoices');
+    //     return { message: "Deleted Invoice" };
+    // } catch (error) {
+    //     return {
+    //         message: "Database Error: Faild to Delete Invoice",
+    //     };
+    // }
+
 }
