@@ -6,6 +6,13 @@ import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchInvoicesPages } from '@/app/lib/data';
+import { Metadata } from 'next';
+
+// 添加页面元数据，seo友好
+export const metadata: Metadata = {
+  // title: 'Invoices | Acme Dashboard',
+  title: 'Invoices',  // 使用模板后也可以渲染出 'Invoices | Acme Dashboard'
+};
 
 export default async function Page(props: {
   searchParams?: Promise<{
